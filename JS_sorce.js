@@ -138,7 +138,15 @@ if(form){
       const resp = await fetch(form.action, {method: form.method, body: data, headers:{'Accept':'application/json'}});
       const j = await resp.json();
       if(resp.ok){ formStatus.textContent = '전송 완료. 감사합니다!'; form.reset(); }
-      else { formStatus.textContent = j.error ? j.error.join(', ') : '전송 실패'; }
+      if (resp.ok) {
+  formStatus.textContent = '전송 완료. 감사합니다!';
+  form.reset();
+} else {
+  formStatus.textContent = j.errors
+    ? j.errors.map(e => e.message).join(', ')
+    : '전송 실패';
+}
+
     }catch(err){
       console.error(err);
       formStatus.textContent = '서버 에러: 전송 실패';
@@ -168,3 +176,4 @@ function track(event, data = {}) {
 
 /* ---------- 초기화 로그 ---------- */
 console.info('Portfolio script initialized');
+
